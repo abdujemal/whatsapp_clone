@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom Clone</title>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="peerjs.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+</head>
+<body>
+    <div class="main">
+        <div class="video-section">
+            <div id="video-container">
+
+            </div>
+
+            <div class="video-bottom-bar">
+                <div class="icons">
+
+                    <div onclick="muteUnmute()" class="icon-container mute">
+                        <i>I</i>
+                        <span>Mute</span>
+                    </div>
+
+                    <div onclick="stopStartVideo()" class="icon-container toggle-video">
+                        <i>I</i>
+                        <span>Stop Video</span>
+                    </div>
+
+                </div>
+
+                <div class="icons middle-icons">
+                    <div class="icon-container">
+                        <i>I</i>
+                        <span>Security</span>
+                    </div>
+
+                    <div class="icon-container">
+                        <i>I</i>
+                        <span>Participants</span>
+                    </div>
+
+                    <div class="icon-container">
+                        <i>I</i>
+                        <span>Chat</span>
+                    </div>
+
+                </div>
+
+                <div class="icons">
+                    <p>Leave Meeting</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="chat-section">
+            <div class="user-name">
+                <input type="text" id="user-name">
+                <p onclick="setUserName()">save</p>
+            </div>
+            <div class="chat-container">
+
+            </div>
+
+            <div class="input-container">
+                <input type="text" name="chat" id="chat" placeholder="Send Something ..."/>
+                <div class="send-btn" onclick="sendChat()"><i>></i></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+    
+</body>
+</html>
