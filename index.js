@@ -1,52 +1,45 @@
+const { Server } = require('socket.io');
+const { ExpressPeerServer } = require('peer');
 const express = require('express');
-const process = require('process');
-const {v4: uuidv4} = require('uuid');
-const { Server } = require('socket.io')
-const { createServer } = require('http')
-const { ExpressPeerServer } = require('peer')
+const { v4: uuidv4 } = require('uuid');
+const http = require('http');
 
-
-const app = express(); 
-const server = createServer(app); 
+// Create an Express app and HTTP server
+const app = express();
+const server = http.createServer(app);
 const io = new Server(server);
 
-const peerServer = ExpressPeerServer(app)
+const peerServer = ExpressPeerServer(server, {
+  debug: true,
+});
 
-
-app.set('view engine', "ejs");
-
+app.set('view engine', 'ejs');
 app.use(express.static('public'));
-
 app.use('/peerjs', peerServer);
 
-app.get("/", (req,res)=>{
-   
-    // res.status(200).send("Hello world")
-    res.redirect(`/${uuidv4()}`)
-})
+app.get('/', (req, res) => {
+  res.redirect(`/${uuidv4()}`);
+});
 
-app.get("/:roomId", (req,res)=>{
-    res.render('room', {roomId: req.params.roomId})
-})
+app.get('/:roomId', (req, res) => {
+  res.render('room', { roomId: req.params.roomId });
+});
 
-io.on('connection', socket=>{
-    socket.on('join-room', (roomId, userId)=>{
-        console.log(`${userId} has joined`)
-        socket.join(roomId);
-        socket.to(roomId).emit('user-connected', userId);
-    })
+io.on('connection', (socket) => {
+  socket.on('join-room', (roomId, userId) => {
+    console.log(`${userId} has joined`);
+    socket.join(roomId);
+    socket.to(roomId).emit('user-connected', userId);
+  });
 
-    socket.on('send-chat', (roomId, name, text)=>{
-        console.log(`chat send from: ${name}: ${text}`);
-        socket.to(roomId).emit('recieve-chat', name, text);
-        socket.emit('recieve-chat', name, text);
-    })
+  socket.on('send-chat', (roomId, name, text) => {
+    console.log(`Chat sent from: ${name}: ${text}`);
+    socket.to(roomId).emit('receive-chat', name, text);
+    socket.emit('receive-chat', name, text);
+  });
+});
 
-    // socket.on('send-chat', (roomId, name, text)=>{
-    //     console.log(`chat send from: ${name}: ${text}`);
-    //     socket.join(roomId);
-    //     socket.to(roomId).emit('recieve-chat', name, text);
-    // })
-})
-
-server.listen(process.env.PORT ,9090)
+// Export the handler function for Vercel
+module.exports = (req, res) => {
+  server.emit('request', req, res);
+};
