@@ -6,12 +6,11 @@ const http = require('http');
 
 // Create an Express app and HTTP server
 const app = express();
+const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server);
 
-const peerServer = ExpressPeerServer(server, {
-  debug: true,
-});
+const peerServer = ExpressPeerServer(server);
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -39,7 +38,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Export the handler function for Vercel
-module.exports = (req, res) => {
-  server.emit('request', req, res);
-};
+server.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
